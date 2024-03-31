@@ -12,6 +12,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.removeConstraints(view.constraints)
         // create a new instance of UILable Class.
         let label1 = UILabel()
         
@@ -89,7 +90,8 @@ class ViewController: UIViewController {
 //        let metrics = ["lableHeight": 88]
 //
 //        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[label1(lableHeight@999)]-[label2(label1)]-[label3(label1)]-[label4(label1)]-[label5(label1)]-(>=10)-|", options: [], metrics: metrics, views: viewDictionary))
-        
+
+
         // ########################### Using Auto Layout Anchors ##########################
         // ################################################################################
         
@@ -97,16 +99,20 @@ class ViewController: UIViewController {
         var previews: UILabel?
         
         for label in [label1, label2, label3, label4, label5] {
-            // sets up a constraint that makes the width of the current label (label) equal to the width of the view.
-            label.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-            // sets up a constraint that sets the height of the current label (label) to a constant value of 88 points.
-            label.heightAnchor.constraint(equalToConstant: 88).isActive = true
-            
+            // Set leading and trailing constraints to safe area
+            NSLayoutConstraint.activate([
+                label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+                label.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+                // Set height to 1/5th of the main view height minus 10 for spacing
+                label.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.2, constant: -10)
+            ])
             if let previews = previews {
                 // sets up a constraint that pins the top of the current label (label) to the bottom of the previews label, with a constant spacing of 10 points between them.
+                // To create vertical spacing between the labels.
                 label.topAnchor.constraint(equalTo: previews.bottomAnchor, constant: 10).isActive = true
             } else {
-                // sets up a constraint that pins the top of the current label (label) to the top of the view's Safe Area.
+                // If this is the first label, it is positioned at the top of the view's safe area.
+                // To align the first label with the top of the view.
                 label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor , constant: 0).isActive = true
             }
             // is updated to store the current label, so it can be used as the previews label in the next iteration of the loop.§
